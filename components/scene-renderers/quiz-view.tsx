@@ -1069,6 +1069,49 @@ export function QuizView({ questions, sceneId, stageId }: QuizViewProps) {
             {/* Results */}
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               <ScoreBanner score={earnedScore} total={totalPoints} results={results} />
+              {/* Weak Areas Detected */}
+{results.some(r => r.status === 'incorrect') && (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="rounded-2xl border border-amber-200 dark:border-amber-800 bg-amber-50 dark:bg-amber-900/20 p-5"
+  >
+    <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-2">
+      📚 Weak Areas Detected
+    </h3>
+    <p className="text-xs text-amber-600 dark:text-amber-400 mb-4">
+      <p className="text-xs text-amber-600 dark:text-amber-400 mb-4">
+  Please revise these topics. Revisit the slides below:
+</p>
+    </p>
+    <div className="space-y-2">
+      {results
+        .filter(r => r.status === 'incorrect')
+        .map((r, idx) => {
+          const q = questions.find(q => q.id === r.questionId);
+          if (!q) return null;
+          return (
+            <div
+              key={r.questionId}
+              className="flex items-start gap-3 p-3 rounded-lg bg-white dark:bg-gray-800 border border-amber-200 dark:border-amber-800"
+            >
+              <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 text-xs font-bold flex items-center justify-center shrink-0">
+                {idx + 1}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-200 truncate">
+                  {q.question}
+                </p>
+                <p className="text-[10px] text-amber-600 mt-1">
+                  Review this topic
+                </p>
+              </div>
+            </div>
+          );
+        })}
+    </div>
+  </motion.div>
+)}
 
               {questions.map((q, i) => {
                 const r = resultMap[q.id];
@@ -1111,6 +1154,7 @@ export function QuizView({ questions, sceneId, stageId }: QuizViewProps) {
                 );
               })}
             </div>
+            
           </motion.div>
         )}
       </AnimatePresence>

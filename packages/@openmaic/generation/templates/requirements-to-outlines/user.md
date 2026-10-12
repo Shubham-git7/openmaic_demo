@@ -79,7 +79,7 @@ Never return a bare array. Never omit `languageDirective` or `courseTitle`. All 
 - **quiz scenes must include quizConfig**:
    ```json
    "quizConfig": {
-     "questionCount": 2,
+     "questionCount": "<number of slide scenes>",
      "difficulty": "easy" | "medium" | "hard",
      "questionTypes": ["single", "multiple"]
    }
@@ -91,7 +91,12 @@ Never return a bare array. Never omit `languageDirective` or `courseTitle`. All 
    - Select widgetType based on concept: simulation (physics/chem), diagram (processes), code (programming), game (practice), visualization3d (3D models)
    - Provide appropriate widgetOutline for the widget type
 - **Scene count**: Based on inferred duration, typically 1-2 scenes per minute
-- **Quiz placement**: Recommend inserting a quiz every 3-5 slides for assessment
+// - **Quiz placement**: Recommend inserting a quiz every 3-5 slides for assessment
+- **Quiz placement**: Insert ONE quiz scene at the end of the course (after all slide scenes).
+//- **Quiz question count**: Set `quizConfig.questionCount` equal to the total number of slide scenes in the course. Each slide gets exactly 1 question. If the course has 5 slides, use questionCount = 5.
+- **Quiz question count**: Set `quizConfig.questionCount` = (number of slide scenes) × 2. Each slide gets exactly 2 questions — one conceptual and one application-based. If the course has 5 slides, use questionCount = 10.
+- **Question types**: Mix `single`, `multiple`, and `short_answer` — no single type should exceed 50% of the questions.
+- **Difficulty progression**: Arrange questions progressively — first 30% easy, middle 40% medium, last 30% hard.
 - **Language**: Infer from the user's requirement text and context, then output all content in the inferred language
 - **If web search results are provided**, reference specific findings and sources in scene descriptions and keyPoints. The search results provide up-to-date information — incorporate it to make the course content current and accurate.
 
