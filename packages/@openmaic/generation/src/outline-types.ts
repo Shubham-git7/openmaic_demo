@@ -104,4 +104,15 @@ export interface SceneOutline {
   };
   widgetType?: WidgetType;
   widgetOutline?: WidgetOutline;
+  
+  /**
+   * All slide scenes in this course (populated on quiz outlines only).
+   * Used to map quiz questions back to the exact slide where the topic
+   * was taught, for weak-area remediation.
+   */
+  courseSlides?: Array<{
+    id: string;
+    number: number;
+    title: string;
+  }>;
 }

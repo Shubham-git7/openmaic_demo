@@ -203,6 +203,11 @@ export interface QuizQuestion {
   commentPrompt?: string; // Grading guidance for text questions
   hasAnswer?: boolean; // Whether auto-grading is possible
   points?: number; // Points per question (default 1)
+  
+    // Exact slide reference for weak-area remediation
+  slideId?: string;
+  slideNumber?: number;
+  slideTitle?: string;
 }
 
 /**

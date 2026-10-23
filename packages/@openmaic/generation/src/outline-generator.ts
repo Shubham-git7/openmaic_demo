@@ -179,6 +179,25 @@ export async function generateSceneOutlinesFromRequirements(
 
     const result = uniquifyMediaElementIds(enriched);
 
+    //////////////////////////////////////// changes on slide ID course slider///////////////////////////////////////////////////////
+     // Populate `courseSlides` on the quiz outline so quiz generation can
+    // reference the exact slide where each tested concept was taught.
+    // This powers weak-area remediation ("revisit Slide 3 — ...").
+    const slideScenes = result.filter((o) => o.type === 'slide');
+    if (slideScenes.length > 0) {
+      const courseSlides = slideScenes.map((s, index) => ({
+        id: s.id,
+        number: index + 1,
+        title: s.title,
+      }));
+
+      for (const outline of result) {
+        if (outline.type === 'quiz') {
+          outline.courseSlides = courseSlides;
+        }
+      }
+    }
+
     return { success: true, data: { languageDirective, courseTitle, outlines: result } };
   } catch (error) {
     return { success: false, error: String(error) };

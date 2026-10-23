@@ -865,6 +865,12 @@ async function generateQuizContent(
     questionTypes: ['single'],
   };
 
+  // Build the slides list from the quiz outline's courseSlides field.
+  // Format: `3. id="slide_abc" | title="Container Lifecycle"`
+  const slidesList = (outline.courseSlides ?? [])
+    .map((s) => `${s.number}. id="${s.id}" | title="${s.title}"`)
+    .join('\n');
+
   const prompts = buildPrompt(PROMPT_IDS.QUIZ_CONTENT, {
     title: outline.title,
     description: outline.description,
@@ -873,6 +879,7 @@ async function generateQuizContent(
     difficulty: quizConfig.difficulty,
     questionTypes: quizConfig.questionTypes.join(', '),
     languageDirective: languageDirective || '',
+    slidesList,
   });
 
   if (!prompts) {
@@ -907,7 +914,33 @@ async function generateQuizContent(
       hasAnswer: isText ? false : true,
     };
   });
+  log.info(
+    `[quiz-diag] courseSlides count=${outline.courseSlides?.length ?? 0}, titles=[${(outline.courseSlides ?? []).map((s) => `${s.number}:${s.title}`).join(' | ')}]`,
+  );
+  //  // Validate slide references — drop invalid slideNumber/slideTitle that
+  // // don't match the actual course slides (LLM hallucination guard).
+  // const validSlideNumbers = new Set((outline.courseSlides ?? []).map((s) => s.number));
+  // const validSlideTitles = new Set((outline.courseSlides ?? []).map((s) => s.title));
 
+  // for (const q of questions) {
+  //   if (
+  //     q.slideNumber !== undefined &&
+  //     (!validSlideNumbers.has(q.slideNumber) || !validSlideTitles.has(q.slideTitle ?? ''))
+  //   ) {
+  //     log.warn(
+  //       `[quiz] Dropping invalid slide reference from ${q.id}: slideNumber=${q.slideNumber}, slideTitle="${q.slideTitle}"`,
+  //     );
+  //     q.slideNumber = undefined;
+  //     q.slideTitle = undefined;
+  //     q.slideId = undefined;
+  //   }
+  // }
+  log.info(
+    `[quiz-diag] questions=${questions.length}, courseSlides=${outline.courseSlides?.length ?? 0}, courseSlidesData=${JSON.stringify(outline.courseSlides ?? [])}`,
+  );
+  log.info(
+    `[quiz-diag] sample question slide fields: num=${questions[0]?.slideNumber}, title="${questions[0]?.slideTitle}", id="${questions[0]?.slideId}"`,
+  );
   const contractFailure = findQuizOptionsContractFailure(questions);
   if (contractFailure) {
     log.error(`Quiz option contract failed for "${outline.title}": ${contractFailure}`);

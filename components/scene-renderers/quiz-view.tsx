@@ -1070,7 +1070,7 @@ export function QuizView({ questions, sceneId, stageId }: QuizViewProps) {
             <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
               <ScoreBanner score={earnedScore} total={totalPoints} results={results} />
               {/* Weak Areas Detected */}
-{results.some(r => r.status === 'incorrect') && (
+{results.some((r) => r.status === 'incorrect') && (
   <motion.div
     initial={{ opacity: 0, y: 10 }}
     animate={{ opacity: 1, y: 0 }}
@@ -1079,11 +1079,9 @@ export function QuizView({ questions, sceneId, stageId }: QuizViewProps) {
     <h3 className="text-sm font-semibold text-amber-700 dark:text-amber-300 mb-2">
       📚 Weak Areas Detected
     </h3>
-    <p className="text-xs text-amber-600 dark:text-amber-400 mb-4">
-      <p className="text-xs text-amber-600 dark:text-amber-400 mb-4">
-  Please revise these topics. Revisit the slides below:
-</p>
-    </p>
+     <p className="text-xs text-amber-600 dark:text-amber-400 mb-4">
+                    Please revise these topics. Revisit the slides below:
+                  </p>
     <div className="space-y-2">
       {results
         .filter(r => r.status === 'incorrect')
@@ -1099,12 +1097,22 @@ export function QuizView({ questions, sceneId, stageId }: QuizViewProps) {
                 {idx + 1}
               </span>
               <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-gray-700 dark:text-gray-200 truncate">
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-200">
                   {q.question}
                 </p>
-                <p className="text-[10px] text-amber-600 mt-1">
-                  Review this topic
-                </p>
+                                {q.slideNumber && q.slideTitle ? (
+                  <p className="text-[10px] text-amber-700 dark:text-amber-400 mt-1">
+                    Please revisit{' '}
+                    <span className="font-semibold">
+                      Slide {q.slideNumber} — &ldquo;{q.slideTitle}&rdquo;
+                    </span>{' '}
+                    to review this topic.
+                  </p>
+                ) : (
+                  <p className="text-[10px] text-amber-600 dark:text-amber-400 mt-1">
+                    Review this topic
+                  </p>
+                )}
               </div>
             </div>
           );
